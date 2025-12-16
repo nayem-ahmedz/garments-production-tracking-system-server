@@ -4,8 +4,13 @@ const app = express();
 require('dotenv').config();
 const connectDB = require('./config/db');
 
+// firebase admin
+
+
+
 // importing api routes
 const userRoutes = require('./routes/user');
+const adminRoutes = require('./routes/admin');
 
 const port = process.env.PORT || 3000;
 
@@ -26,6 +31,19 @@ app.get('/', (req, res) => {
 // users API
 app.use('/api/users', userRoutes);
 
+// admin API
+app.use('/api/admin/users', adminRoutes);
+
+// 404 error
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    path: req.originalUrl
+  });
+});
+
+// start the server after database is connected
 connectDB()
   .then(() => {
     app.listen(port, () => {

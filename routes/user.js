@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
+const verifyFirebaseToken = require('../middleware/verifyFirebaseToken');
 
 const router = express.Router();
 
@@ -33,6 +34,16 @@ router.post('/', async (req, res) => {
         console.error(error);
         res.status(500).json({ success: false, error: 'Failed to add user' });
     }
+});
+
+router.get('/profile', verifyFirebaseToken, async(req, res) => {
+    const email = req.query.email;
+    console.log(email)
+    if(email !== req.tokenEmail){
+        res.status(403).json({message: 'forbidden access'});
+    }
+    const user = await User.findOne({email: req.tokenEmail}).select('-__v');
+    res.json({success: true, user});
 });
 
 module.exports = router;

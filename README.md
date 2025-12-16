@@ -175,6 +175,7 @@ NODE_ENV=production
 ## 🧰 Used Tools & Others
 - mongoose
 - dotenv
+- firebase admin
 - Postman (API Testing)
 - MongoDB Atlas Website
 - Vercel Deployment
