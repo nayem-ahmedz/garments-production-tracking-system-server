@@ -4,9 +4,6 @@ const app = express();
 require('dotenv').config();
 const connectDB = require('./config/db');
 
-// firebase admin
-
-
 
 // importing api routes
 const userRoutes = require('./routes/user');
@@ -16,9 +13,7 @@ const port = process.env.PORT || 3000;
 
 // middleware
 const corsOption = {
-    origin: [
-        'http://localhost:5173'
-    ]
+    origin: process.env.FRONTEND_LINK
 }
 app.use(cors(corsOption));
 app.use(express.json());
