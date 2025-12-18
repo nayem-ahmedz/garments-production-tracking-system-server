@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ["pending", "active", "blocked"], // restrict values
+            enum: ["pending", "active", "rejected"], // restrict values
             default: "pending"  // Default is "pending"
         },
         role: {

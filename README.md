@@ -89,7 +89,6 @@ It is built with **real-world production security practices** in mind.
 ```
 server/
  ├─ routes/
- ├─ controllers/
  ├─ middlewares/
  ├─ models/
  ├─ config/
@@ -108,7 +107,8 @@ POST /jwt
 
 ### 👤 Users
 ```
-GET    /users
+GET    /api/users?email=useremail
+POST   /api/users
 PATCH  /users/role/:id
 PATCH  /users/suspend/:id
 ```
@@ -135,6 +135,11 @@ PATCH  /orders/reject/:id
 ```
 POST /tracking
 GET  /tracking/:orderId
+```
+
+### Admin
+```
+Get /api/admin/users
 ```
 
 ---

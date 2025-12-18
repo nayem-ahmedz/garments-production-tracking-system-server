@@ -4,6 +4,7 @@ const verifyFirebaseToken = require('../middleware/verifyFirebaseToken');
 
 const router = express.Router();
 
+// create a user
 router.post('/', async (req, res) => {
     try {
         const { name, email, photoURL, role } = req.body;
@@ -36,14 +37,30 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/profile', verifyFirebaseToken, async(req, res) => {
+// get user role
+router.get('/role', verifyFirebaseToken, async(req, res) => {
     const email = req.query.email;
-    console.log(email)
     if(email !== req.tokenEmail){
         res.status(403).json({message: 'forbidden access'});
     }
     const user = await User.findOne({email: req.tokenEmail}).select('-__v');
-    res.json({success: true, user});
+    res.json({
+        success: true,
+        role: user ? user.role : 'buyer'
+    });
+});
+
+// get profile of user
+router.get('/profile', verifyFirebaseToken, async(req, res) => {
+    const email = req.query.email;
+    if(email !== req.tokenEmail){
+        res.status(403).json({message: 'forbidden access'});
+    }
+    const user = await User.findOne({email: req.tokenEmail}).select('-__v');
+    res.json({
+        success: true,
+        user: user ? user : 'user'
+    });
 });
 
 module.exports = router;
