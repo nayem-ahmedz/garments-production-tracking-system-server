@@ -8,6 +8,7 @@ const connectDB = require('./config/db');
 // importing api routes
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
+const productRoutes = require('./routes/products');
 
 const port = process.env.PORT || 3000;
 
@@ -28,6 +29,9 @@ app.use('/api/users', userRoutes);
 
 // admin API
 app.use('/api/admin/users', adminRoutes);
+
+// products API
+app.use('/api/products', productRoutes);
 
 // 404 error
 app.use((req, res) => {
