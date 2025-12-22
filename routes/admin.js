@@ -65,7 +65,7 @@ router.patch('/users/:id', verifyFirebaseToken, verifyAdmin, async(req, res) => 
 });
 
 // get products added by the managers | admin route
-router.get('/products', verifyFirebaseToken, async (req, res) => {
+router.get('/products', verifyFirebaseToken, verifyAdmin, async (req, res) => {
     try {
         const { limit } = req.query;
         let productsQuery = Product.find({}, {

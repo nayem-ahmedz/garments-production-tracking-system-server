@@ -1,6 +1,7 @@
 const express = require('express');
 const verifyFirebaseToken = require('../middleware/verifyFirebaseToken');
 const Product = require('../models/Product');
+const verifyManager = require('../middleware/verifyManager');
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.get('/', async (req, res) => {
 });
 
 // get products added by the logged-in manager
-router.get('/my', verifyFirebaseToken, async (req, res) => {
+router.get('/my', verifyFirebaseToken, verifyManager, async (req, res) => {
     try {
         const { limit } = req.query;
         const query = { addedByEmail: req.tokenEmail };
@@ -75,7 +76,7 @@ router.get('/:id', verifyFirebaseToken, async (req, res) => {
 
 
 // POST : add a product
-router.post('/', verifyFirebaseToken, async (req, res) => {
+router.post('/', verifyFirebaseToken, verifyManager, async (req, res) => {
     try {
         const data = req.body;
         // validate images
