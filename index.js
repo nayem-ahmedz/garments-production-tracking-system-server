@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 
 // admin API
-app.use('/api/admin/users', adminRoutes);
+app.use('/api/admin', adminRoutes);
 
 // products API
 app.use('/api/products', productRoutes);

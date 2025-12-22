@@ -3,13 +3,14 @@ const User = require('../models/User');
 const router = express.Router();
 const verifyFirebaseToken = require('../middleware/verifyFirebaseToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
+const Product = require('../models/Product');
 
 // admin routes is protected in 2 layers
 // 1. verify firebase token
 // 2. verfiy user role and status from database
 
 // list of all users
-router.get('/',verifyFirebaseToken, verifyAdmin, async(req, res) => {
+router.get('/users',verifyFirebaseToken, verifyAdmin, async(req, res) => {
     try{
         const users = await User.find().select('-__v'); // exclude _v = version
         res.json({success: true, users});
@@ -19,7 +20,7 @@ router.get('/',verifyFirebaseToken, verifyAdmin, async(req, res) => {
 });
 
 // update user role
-router.patch('/:id', verifyFirebaseToken, verifyAdmin, async(req, res) => {
+router.patch('/users/:id', verifyFirebaseToken, verifyAdmin, async(req, res) => {
     try{
         const { id } = req.params;
         const { role, status } = req.body;
@@ -60,6 +61,29 @@ router.patch('/:id', verifyFirebaseToken, verifyAdmin, async(req, res) => {
             success: false,
             error: err.message
         });
+    }
+});
+
+// get products added by the managers | admin route
+router.get('/products', verifyFirebaseToken, async (req, res) => {
+    try {
+        const { limit } = req.query;
+        let productsQuery = Product.find({}, {
+            name: 1,
+            price: 1,
+            images: 1,
+            category: 1,
+            showOnHome: 1,
+            addedByEmail: 1
+        });
+        if (limit) {
+            productsQuery = productsQuery.limit(Number(limit));
+        }
+        const products = await productsQuery.exec();
+        res.json({ success: true, products });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 

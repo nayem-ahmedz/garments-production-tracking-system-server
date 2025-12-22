@@ -42,6 +42,9 @@ router.post('/', verifyFirebaseToken, async (req, res) => {
             });
         }
         data.demoVideoLink = data.demoVideoLink || "";
+        // add email of the manager
+        data.addedByEmail = req.tokenEmail;
+
         const product = new Product(data);
         await product.save();
         res.status(201).json({
@@ -56,5 +59,30 @@ router.post('/', verifyFirebaseToken, async (req, res) => {
         });
     }
 });
+
+
+// get products added by the logged-in manager
+router.get('/my', verifyFirebaseToken, async (req, res) => {
+    try {
+        const { limit } = req.query;
+        const query = { addedByEmail: req.tokenEmail };
+
+        let productsQuery = Product.find(query, {
+            name: 1,
+            price: 1,
+            images: 1,
+            paymentOption: 1
+        });
+        if (limit) {
+            productsQuery = productsQuery.limit(Number(limit));
+        }
+        const products = await productsQuery.exec();
+        res.json({ success: true, products });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 
 module.exports = router;
