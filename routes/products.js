@@ -30,7 +30,51 @@ router.get('/', async (req, res) => {
     }
 });
 
-// add a product
+// get products added by the logged-in manager
+router.get('/my', verifyFirebaseToken, async (req, res) => {
+    try {
+        const { limit } = req.query;
+        const query = { addedByEmail: req.tokenEmail };
+
+        let productsQuery = Product.find(query, {
+            name: 1,
+            price: 1,
+            images: 1,
+            paymentOption: 1
+        });
+        if (limit) {
+            productsQuery = productsQuery.limit(Number(limit));
+        }
+        const products = await productsQuery.exec();
+        res.json({ success: true, products });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// get single product data
+router.get('/:id', verifyFirebaseToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+        res.json({ success: true, product });
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            message: "Invalid product ID"
+        });
+    }
+});
+
+
+// POST : add a product
 router.post('/', verifyFirebaseToken, async (req, res) => {
     try {
         const data = req.body;
@@ -57,30 +101,6 @@ router.post('/', verifyFirebaseToken, async (req, res) => {
             success: false,
             message: err.message
         });
-    }
-});
-
-
-// get products added by the logged-in manager
-router.get('/my', verifyFirebaseToken, async (req, res) => {
-    try {
-        const { limit } = req.query;
-        const query = { addedByEmail: req.tokenEmail };
-
-        let productsQuery = Product.find(query, {
-            name: 1,
-            price: 1,
-            images: 1,
-            paymentOption: 1
-        });
-        if (limit) {
-            productsQuery = productsQuery.limit(Number(limit));
-        }
-        const products = await productsQuery.exec();
-        res.json({ success: true, products });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ success: false, error: err.message });
     }
 });
 
