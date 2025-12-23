@@ -8,24 +8,36 @@ const router = express.Router();
 // get all product
 router.get('/', async (req, res) => {
     try {
-        const { featured, limit } = req.query;
+        const { featured, limit = 6, skip = 0 } = req.query;
         const query = {};
+
+        // convert to number
+        const limitNum = Number(limit);
+        const skipNum = Number(skip);
         // check if featured products is requested
-        if(featured === 'true') query.showOnHome = true; 
-        let productsQuery = Product.find(query, {
+        if (featured === 'true') query.showOnHome = true;
+
+        // total count of the products
+        const total = await Product.countDocuments(query);
+
+        // paginated query
+        const products = await Product.find(query, {
             name: 1,
             category: 1,
             price: 1,
             description: 1,
             availableQuantity: 1,
             images: 1
+        })
+            .skip(skipNum)
+            .limit(limitNum)
+            .sort({ createdAt: -1 });
+        // return response
+        res.json({
+            success: true,
+            total,
+            products
         });
-        // check limit exist
-        if(limit){
-            productsQuery = productsQuery.limit(Number(limit));
-        }
-        const products = await productsQuery.exec();
-        res.json({ success: true, products });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
