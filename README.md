@@ -5,7 +5,7 @@ Powerful, secure, and scalable **REST API server** for managing garment producti
 ---
 
 ## 🔗 Live API Server
-👉 coming soon...
+👉 https://garments-production-tracking-system-server.vercel.app/
 
 ---
 
@@ -68,7 +68,6 @@ It is built with **real-world production security practices** in mind.
 - Cookie Parser
 - CORS
 - dotenv
-- Multer (for image uploads – optional)
 
 ### Deployment
 - Vercel (as serverless function)
@@ -189,8 +188,8 @@ NODE_ENV=production
 
 ## 📅 Project Timeline
 - Started: 9 Dec 2025
-- Completed on: 
-- Last Updated: --
+- Completed on: 24 Dec 2025
+- Last Updated: 24 Dec 2025
 
 ---
 
