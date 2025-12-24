@@ -182,30 +182,51 @@ router.delete('/products/:id', verifyFirebaseToken, verifyAdmin, async (req, res
 // routes/adminDashboard.js
 router.get("/dashboard-stats", verifyFirebaseToken, verifyAdmin, async (req, res) => {
     try {
-      const adminCount = await User.countDocuments({ role: "admin" });
-      const managerCount = await User.countDocuments({ role: "manager" });
-      const buyerCount = await User.countDocuments({ role: "buyer" });
+        const adminCount = await User.countDocuments({ role: "admin" });
+        const managerCount = await User.countDocuments({ role: "manager" });
+        const buyerCount = await User.countDocuments({ role: "buyer" });
 
-      const totalProducts = await Product.countDocuments();
-      const totalOrders = await Order.countDocuments();
-      res.json({
-        success: true,
-        users: {
-          admin: adminCount,
-          manager: managerCount,
-          buyer: buyerCount,
-        },
-        products: totalProducts,
-        orders: totalOrders,
-      });
+        const totalProducts = await Product.countDocuments();
+        const totalOrders = await Order.countDocuments();
+        res.json({
+            success: true,
+            users: {
+                admin: adminCount,
+                manager: managerCount,
+                buyer: buyerCount,
+            },
+            products: totalProducts,
+            orders: totalOrders,
+        });
     } catch (err) {
-      console.error("Dashboard stats error:", err);
-      res.status(500).json({
-        success: false,
-        message: "Failed to load dashboard stats",
-      });
+        console.error("Dashboard stats error:", err);
+        res.status(500).json({
+            success: false,
+            message: "Failed to load dashboard stats",
+        });
     }
-  }
+}
 );
+
+// get all orders
+// GET orders - Optional status filter
+router.get('/orders', verifyFirebaseToken, verifyAdmin, async (req, res) => {
+    try {
+        const { status } = req.query;
+        const filter = status ? { status } : {};
+        const orders = await Order.find(filter).sort({ createdAt: -1 });
+        res.json({
+            success: true,
+            count: orders.length,
+            orders
+        });
+    } catch (error) {
+        console.error('Fetch orders error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch orders'
+        });
+    }
+});
 
 module.exports = router;
