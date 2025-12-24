@@ -12,14 +12,37 @@ const OrderSchema = new mongoose.Schema({
   contactNumber: { type: String, required: true },
   address: { type: String, required: true },
   notes: { type: String },
-  status: { 
-    type: String, 
-    enum: ['pending', 'approved', 'rejected', 'inProduction', 'shipped', 'delivered'], 
-    default: 'pending' 
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected', 'inProduction', 'shipped', 'delivered'],
+    default: 'pending'
   },
   approvedBy: { type: String }, // manager/admin email
+  approvedAt: { type: Date }, // timestamp when approved
   shippedAt: { type: Date },
-  deliveredAt: { type: Date }
+  deliveredAt: { type: Date },
+  tracking: {
+    type: [
+      {
+        location: { type: String },
+        note: { type: String },
+        datetime: { type: Date, default: Date.now },
+        status: {
+          type: String,
+          enum: [
+            "Cutting Completed",
+            "Sewing Started",
+            "Finishing",
+            "QC Checked",
+            "Packed",
+            "Shipped",
+            "Out for Delivery"
+          ]
+        }
+      }
+    ],
+    default: []
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', OrderSchema);

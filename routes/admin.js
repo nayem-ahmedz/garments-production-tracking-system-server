@@ -1,9 +1,10 @@
 const express = require('express');
-const User = require('../models/User');
 const router = express.Router();
+const User = require('../models/User');
+const Product = require('../models/Product');
+const Order = require('../models/Order');
 const verifyFirebaseToken = require('../middleware/verifyFirebaseToken');
 const verifyAdmin = require('../middleware/verifyAdmin');
-const Product = require('../models/Product');
 
 // admin routes is protected in 2 layers
 // 1. verify firebase token
@@ -126,5 +127,35 @@ router.delete('/products/:id', verifyFirebaseToken, verifyAdmin, async (req, res
         });
     }
 });
+
+// dashboard stats
+// routes/adminDashboard.js
+router.get("/dashboard-stats", verifyFirebaseToken, verifyAdmin, async (req, res) => {
+    try {
+      const adminCount = await User.countDocuments({ role: "admin" });
+      const managerCount = await User.countDocuments({ role: "manager" });
+      const buyerCount = await User.countDocuments({ role: "buyer" });
+
+      const totalProducts = await Product.countDocuments();
+      const totalOrders = await Order.countDocuments();
+      res.json({
+        success: true,
+        users: {
+          admin: adminCount,
+          manager: managerCount,
+          buyer: buyerCount,
+        },
+        products: totalProducts,
+        orders: totalOrders,
+      });
+    } catch (err) {
+      console.error("Dashboard stats error:", err);
+      res.status(500).json({
+        success: false,
+        message: "Failed to load dashboard stats",
+      });
+    }
+  }
+);
 
 module.exports = router;
