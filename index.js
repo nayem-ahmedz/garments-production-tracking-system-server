@@ -6,8 +6,9 @@ const connectDB = require('./config/db');
 
 
 // importing api routes
-const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
+const managerRoutes = require('./routes/manager');
+const userRoutes = require('./routes/user');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/order');
 
@@ -30,6 +31,9 @@ app.use('/api/users', userRoutes);
 
 // admin API
 app.use('/api/admin', adminRoutes);
+
+// manager API
+app.use('/api/manager', managerRoutes);
 
 // products API
 app.use('/api/products', productRoutes);

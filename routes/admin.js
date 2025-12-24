@@ -10,18 +10,18 @@ const Product = require('../models/Product');
 // 2. verfiy user role and status from database
 
 // list of all users
-router.get('/users',verifyFirebaseToken, verifyAdmin, async(req, res) => {
-    try{
+router.get('/users', verifyFirebaseToken, verifyAdmin, async (req, res) => {
+    try {
         const users = await User.find().select('-__v'); // exclude _v = version
-        res.json({success: true, users});
-    } catch(err) {
-        res.status(500).json({success: false, error: err.message});
+        res.json({ success: true, users });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 
 // update user role
-router.patch('/users/:id', verifyFirebaseToken, verifyAdmin, async(req, res) => {
-    try{
+router.patch('/users/:id', verifyFirebaseToken, verifyAdmin, async (req, res) => {
+    try {
         const { id } = req.params;
         const { role, status } = req.body;
 
@@ -56,7 +56,7 @@ router.patch('/users/:id', verifyFirebaseToken, verifyAdmin, async(req, res) => 
             message: 'User updated successfully',
             user: updatedUser
         });
-    } catch(err){
+    } catch (err) {
         res.status(500).json({
             success: false,
             error: err.message
@@ -84,6 +84,46 @@ router.get('/products', verifyFirebaseToken, verifyAdmin, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// udpate a products
+router.patch('/products/:id', verifyFirebaseToken, verifyAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, error: 'Product not found' });
+        }
+        res.json({ success: true, product: updatedProduct });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// delete a product
+router.delete('/products/:id', verifyFirebaseToken, verifyAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedProduct = await Product.findByIdAndDelete(id);
+        if (!deletedProduct) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found',
+            });
+        }
+        res.json({
+            success: true,
+            message: 'Product deleted successfully',
+            productId: id,
+        });
+    } catch (error) {
+        console.error('Delete product error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete product',
+        });
     }
 });
 
