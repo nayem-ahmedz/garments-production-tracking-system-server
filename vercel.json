@@ -2,15 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "deployed-index.js",
+      "src": "serverless-api.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "deployed-index.js",
-      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+      "dest": "/serverless-api.js"
     }
   ]
 }

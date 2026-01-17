@@ -2,9 +2,9 @@
   "name": "garments-order-and-production-tracker-system-server",
   "version": "1.0.0",
   "description": "",
-  "main": "deployed-index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node deployed-index.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
