@@ -1,9 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-require('dotenv').config();
-const connectDB = require('./config/vercel-db');
-
 
 // importing api routes
 const adminRoutes = require('./routes/admin');
@@ -12,17 +9,12 @@ const userRoutes = require('./routes/user');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/order');
 
-const port = process.env.PORT || 3000;
-
 // middleware
 const corsOption = {
     origin: process.env.FRONTEND_LINK
 }
 app.use(cors(corsOption));
 app.use(express.json());
-
-// connect the db, not app listen
-connectDB();
 
 // root api
 app.get('/', (req, res) => {
