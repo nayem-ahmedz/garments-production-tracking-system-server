@@ -67,7 +67,7 @@ router.get('/my', verifyFirebaseToken, verifyManager, async (req, res) => {
 });
 
 // get single product data
-router.get('/:id', verifyFirebaseToken, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findById(id);
